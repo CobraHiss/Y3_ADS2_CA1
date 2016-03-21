@@ -19,7 +19,7 @@ int main() {
 
 	std::cout << "Input Text:" << "\n" << text << "\n\n"; // Preview
 
-	//Huffman h;
+	Huffman h(text);
 
 	system("pause");
 	return 0;

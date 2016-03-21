@@ -27,6 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Huffman.h" />
+    <ClInclude Include="Node.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BA3D68DB-4825-43B5-AC5C-5C13F1F7E3C4}</ProjectGuid>
