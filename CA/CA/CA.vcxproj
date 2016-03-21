@@ -24,6 +24,7 @@
   <ItemGroup>
     <ClCompile Include="Huffman.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Node.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Huffman.h" />
