@@ -20,7 +20,7 @@ private:
 	void buildTree();
 	void createCharToBitMap(Node* nodePtr, std::string letterBits);
 	void testMap();
-	std::priority_queue<Node*, std::vector<Node*>, NodeCompare> pQ;	// http://stackoverflow.com/questions/15646780/priority-queue-of-nodes
+	std::priority_queue<Node, std::vector<Node*>, NodeCompare> pQ;	// http://stackoverflow.com/questions/15646780/priority-queue-of-nodes
 	Node* root = nullptr;											// http://stackoverflow.com/questions/16111337/declaring-a-priority-queue-in-c-with-a-custom-comparator
 public:
 	Huffman(std::string textIn);
