@@ -18,7 +18,7 @@ int main() {
 	}
 	inputTextFile.close();
 
-	std::cout << "- Input Text:" << "\n\n" << std::right << std::setw(32) << text << "\n\n"; // Preview
+	std::cout << "- Input Text" << "\n\n" << std::right << std::setw(6) << " " << text << "\n\n"; // Preview
 
 	Huffman h(text);
 

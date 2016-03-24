@@ -10,6 +10,8 @@
 *    Code version: N/A
 *    Availability: http://www.dreamincode.net/forums/blog/324/entry-3150-an-in-depth-look-at-huffman-encoding/
 ***************************************************************************************/
+// Lecture notes, specifically huffman.ppt used for guidance
+// Also Google... lots and lots of Google
 
 Huffman::Huffman(std::string textIn)
 	: inputText(textIn)
@@ -19,6 +21,7 @@ Huffman::Huffman(std::string textIn)
 	buildTree();
 	createCharToBitMap(root, "");
 	encodeHuffmanToFile();
+	decodeHuffmanFromFile();
 }
 
 void Huffman::createCharFreqMap() {
@@ -38,8 +41,7 @@ void Huffman::createCharFreqMap() {
 	std::cout << std::right << std::setw(15) << "Character";
 	std::cout << " | Frequency" << std::endl;
 	for (std::map<char, int>::iterator charMapItr = charMap.begin(); charMapItr != charMap.end(); charMapItr++) {
-		std::cout << std::right << std::setw(11) << charMapItr->first;
-		std::cout << std::right << std::setw(12) << charMapItr->second << std::endl;
+		std::cout << std::right << std::setw(11) << charMapItr->first << std::right << std::setw(12) << charMapItr->second << std::endl;
 	}
 	std::cout << std::endl;
 }
@@ -99,31 +101,40 @@ void Huffman::encodeHuffmanToFile() {
 	std::cout << " | BitCode" << std::endl;
 
 	for (std::map<char, std::string>::iterator itr = charToBitMap.begin(); itr != charToBitMap.end(); itr++) {
-		std::cout << std::right << std::setw(11) << itr->first;
-		std::cout << std::right << std::setw(12) << itr->second << std::endl;
+		std::cout << std::right << std::setw(11) << " "; // this is just to pad the space on the left hand side
+		std::cout << std::left << std::setw(11) << itr->first << std::setw(50) << itr->second << std::endl;
 	}
 	std::cout << std::endl;
 
-	// open file
+	// output file
+	std::string huffmanCode;
 	std::ofstream fileToWrite;
 	fileToWrite.open("CharCodes.txt");
 
 	for (int i = 0; i < inputText.size(); i++) {
 		fileToWrite << charToBitMap.find(inputText[i])->second; // finds the letter (from inputText) in the map, then fetches its second (code)
+		huffmanCode += charToBitMap.find(inputText[i])->second; // could've just output the string from decodeHuffmanFromFile(), but doing this to stay organised
 	}
 	fileToWrite.close();
 
-	std::cout << "- Huffman Encoded Characters Written To File\n";
+	std::cout << "- Huffman Encoded Characters Written To File\n\n";
+
+	// loop just to break up the output into chunks of 20
+	for (unsigned int i = 0; i < huffmanCode.length(); i+=30) {
+		std::cout << std::right << std::setw(6) << " " << huffmanCode.substr(i, 30) << std::endl;
+	}
+	std::cout << std::endl;
 }
 
 void Huffman::decodeHuffmanFromFile() {
 
-	std::string text;
+	// put file contents into a string
+	std::string huffmanCode;
 	std::ifstream inputCharCodes("CharCodes.txt");
 
 	if (inputCharCodes.is_open()) {
 		while (inputCharCodes) {
-			std::getline(inputCharCodes, text);
+			std::getline(inputCharCodes, huffmanCode);
 		}
 	}
 	else {
@@ -131,5 +142,31 @@ void Huffman::decodeHuffmanFromFile() {
 	}
 	inputCharCodes.close();
 
+	// decode Huffman code
+	std::string decodedHuffman = ""; // to store the decoded text
+	Node* nodePtr = root;
+	for (int i = 0; i != huffmanCode.size(); i++)
+	{
+		if (huffmanCode[i] == '0') { // if 0, go left
+			nodePtr = nodePtr->left;
+		}
+		else { // else, it can only be 1, which means go right
+			nodePtr = nodePtr->right;
+		}
+		if (nodePtr->left == nullptr && nodePtr->right == nullptr) // if we reach leaf node
+		{
+			decodedHuffman += nodePtr->letter; // append the letter in that leaf node to the string
+			nodePtr = root; // reset node pointer to root
+		}
+	}
+	std::cout << "- Huffman Encoded Characters Decoded From File. Written To A New File\n\n";
 
+	// write out the decoded message to file
+	std::ofstream fileToWrite;
+	fileToWrite.open("DecodedHuffman.txt");
+	fileToWrite << decodedHuffman;
+	fileToWrite.close();
+
+	// output the code
+	std::cout << std::right << std::setw(6) << " " << decodedHuffman << "\n\n";
 }
