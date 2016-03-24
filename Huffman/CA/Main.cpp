@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include "Huffman.h"
+#include <iomanip> // std::setw
 
 int main() {
 
@@ -17,7 +18,7 @@ int main() {
 	}
 	inputTextFile.close();
 
-	std::cout << "Input Text:" << "\n" << text << "\n\n"; // Preview
+	std::cout << "- Input Text:" << "\n\n" << std::right << std::setw(32) << text << "\n\n"; // Preview
 
 	Huffman h(text);
 
