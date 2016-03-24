@@ -13,7 +13,7 @@
 *    Availability: http://www.dreamincode.net/forums/blog/324/entry-3150-an-in-depth-look-at-huffman-encoding/
 ***************************************************************************************/
 // Lecture notes, specifically huffman.ppt used for guidance
-// Also Google... lots and lots of Google
+// Also Google... lots and lots of Google and StackOverflow
 
 Huffman::Huffman(std::string textIn)
 	: inputText(textIn)
@@ -25,6 +25,7 @@ Huffman::Huffman(std::string textIn)
 	encodeHuffmanToFile();
 	decodeHuffmanFromFile();
 	compressHuffmanToFile();
+	decompressHuffmanFromFile();
 }
 
 void Huffman::createCharFreqMap() {
@@ -74,7 +75,7 @@ void Huffman::buildTree() {
 	root = pQ.top(); // ref(set) the last node as the root
 	pQ.pop(); // pop off the tree from the priority queue
 
-	std::cout << "- Frequency Tree Built\n\n";
+	std::cout << "- Frequency Tree Built. Verified at www.algorasim.com\n\n";
 	std::cout << std::right << std::setw(6) << " " << "Frequency Of Root Node: " << root->freq << "\n\n";
 }
 
@@ -123,7 +124,9 @@ void Huffman::encodeHuffmanToFile() {
 
 	std::cout << "- Huffman Encoded Characters Written To File\n\n";
 
-	// loop just to break up the output into chunks of 20
+	std::cout << std::right << std::setw(6) << " " << "(Size:" << huffmanCode.size() << ")\n";
+
+	// loop just to break up the output into chunks of 30
 	for (unsigned int i = 0; i < huffmanCode.length(); i+=30) {
 		std::cout << std::right << std::setw(6) << " " << huffmanCode.substr(i, 30) << std::endl;
 	}
@@ -184,6 +187,7 @@ void Huffman::compressHuffmanToFile() {
 	// pad the huffman code to create chunks of equal size (8-bits) - Reason... CPU reads min of a byte (8-bits)
 	while (huffmanCode.size() % 8 != 0) {
 		huffmanCode.append("0");
+		padding++;
 	}
 
 //	std::cout << huffmanCode << "\n\n";				// test
@@ -222,4 +226,59 @@ void Huffman::compressHuffmanToFile() {
 	fileToWrite.close();
 
 	std::cout << std::right << std::setw(6) << " " << "Output To File: " << compressedCode << "\n\n";
+}
+
+void Huffman::decompressHuffmanFromFile() {
+
+	std::cout << "- Compressed ASCII Huffman Code Decompressed and Decoded From File\n\n";
+
+	unsigned char c = 'K';
+	// NOTE TO SELF... CREATE A METHOD TO READ IN FILES... CODE REUSE FFS!
+	// put file contents into a string
+	std::string input;
+	std::ifstream inputCompressedChars("CompressedHuffman.txt");
+
+	if (inputCompressedChars.is_open()) {
+		while (inputCompressedChars) {
+			std::getline(inputCompressedChars, input);
+		}
+	}
+	else {
+		"File Not Found";
+	}
+	inputCompressedChars.close();
+
+	std::bitset<8> byte; // http://www.cplusplus.com/reference/bitset/bitset/
+	std::string decompressedHuffman;
+
+	for (int i = 0; i < input.size(); i++) {
+		byte = input[i];
+		// std::cout << byte; // wow, this worked like magic, MAGIC!
+		decompressedHuffman += byte.to_string(); // convert byte bitset to string and append to the left string
+	}
+	std::cout << std::right << std::setw(6) << " " << "DECOMPRESSED (Size w Padding: " <<  decompressedHuffman.size() << ", Size w/o Padding: " << (decompressedHuffman.size()-padding) << ")\n";
+	for (unsigned int i = 0; i < decompressedHuffman.length(); i += 30) {
+		std::cout << std::right << std::setw(6) << " " << decompressedHuffman.substr(i, 30) << std::endl;
+	}
+
+	std::string decodedHuffman = ""; // to store the decoded text
+	Node* nodePtr = root;
+	for (int i = 0; i != decompressedHuffman.size()-padding; i++)
+	{
+		if (decompressedHuffman[i] == '0') { // if 0, go left
+			nodePtr = nodePtr->left;
+		}
+		else { // else, it can only be 1, which means go right
+			nodePtr = nodePtr->right;
+		}
+		if (nodePtr->left == nullptr && nodePtr->right == nullptr) // if we reach leaf node
+		{
+			decodedHuffman += nodePtr->letter; // append the letter in that leaf node to the string
+			nodePtr = root; // reset node pointer to root
+		}
+	}
+
+	std::cout << "\n";
+	std::cout << std::right << std::setw(6) << " " << "DECODED\n";
+	std::cout << std::right << std::setw(6) << " " << decodedHuffman << "\n\n";
 }

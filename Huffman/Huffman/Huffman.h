@@ -13,7 +13,8 @@ class Huffman {
 
 private:
 	std::string inputText;
-	std::string huffmanCode; // used in more than one function, so made its scope from function to class wide 
+	std::string huffmanCode; // used in more than one function, so made its scope from function to class wide
+	int padding; // this for padding the huffman code with 0s to make up equal sized chunks of 8 bits
 	std::map<char, int> charMap; // character frequency map
 	std::map<char, std::string> charToBitMap; // for storing chars and corresponding huffman codes from the tree
 	void createCharFreqMap();
@@ -23,8 +24,9 @@ private:
 	void encodeHuffmanToFile();
 	void decodeHuffmanFromFile();
 	void compressHuffmanToFile();
-	// void decompressHuffmanFromFile();
+	void decompressHuffmanFromFile();
 	// void stats();
+	// string readFile(); friend function maybe?
 	std::priority_queue<Node, std::vector<Node*>, NodeCompare> pQ;	// http://stackoverflow.com/questions/15646780/priority-queue-of-nodes
 	Node* root = nullptr; // the tree "hangs" off of this root		// http://stackoverflow.com/questions/16111337/declaring-a-priority-queue-in-c-with-a-custom-comparator
 public:
