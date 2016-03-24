@@ -22,6 +22,7 @@ Huffman::Huffman(std::string textIn)
 	createCharToBitMap(root, "");
 	encodeHuffmanToFile();
 	decodeHuffmanFromFile();
+	compressHuffmanToFile();
 }
 
 void Huffman::createCharFreqMap() {
@@ -129,7 +130,6 @@ void Huffman::encodeHuffmanToFile() {
 void Huffman::decodeHuffmanFromFile() {
 
 	// put file contents into a string
-	std::string huffmanCode;
 	std::ifstream inputCharCodes("CharCodes.txt");
 
 	if (inputCharCodes.is_open()) {
@@ -169,4 +169,22 @@ void Huffman::decodeHuffmanFromFile() {
 
 	// output the code
 	std::cout << std::right << std::setw(6) << " " << decodedHuffman << "\n\n";
+}
+
+void Huffman::compressHuffmanToFile() {
+
+	std::cout << huffmanCode << "\n\n";				// test
+	std::cout << huffmanCode.size() << "\n\n";		// test
+
+	// pad the huffman code to create chunks of equal size (8-bits) - Reason... CPU reads min of a byte (8-bits)
+	while (huffmanCode.size() % 8 != 0) {
+		huffmanCode.append("0");
+	}
+
+	std::cout << huffmanCode << "\n\n";				// test
+	std::cout << huffmanCode.size();				// test
+
+	std::string compressedCode;
+
+
 }
