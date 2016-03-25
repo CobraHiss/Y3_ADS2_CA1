@@ -63,13 +63,10 @@ void Huffman::buildTree() {
 
 	while (pQ.size() != 1) {
 		Node* leftSub = new Node(pQ.top()); // store the top node from the PQ
-//std::cout<< leftSub->freq; // delete just a test of order
 		pQ.pop(); // pop off the top node from the PQ (the one above)
 		Node* rightSub = new Node(pQ.top()); // the same (binary tree, so has to be done twice)
-//std::cout << rightSub->freq; // delete just a test
 		pQ.pop();
 		Node* newNode = new Node(leftSub, rightSub);
-//	std::cout<<newNode->freq;
 		pQ.emplace(newNode); // push new node (tree), and add up the frequency (populated in PQ based on frequency)
 	}
 	root = pQ.top(); // ref(set) the last node as the root
@@ -111,19 +108,14 @@ void Huffman::encodeHuffmanToFile() {
 	}
 	std::cout << std::endl;
 
-	// output file
-	std::string huffmanCode;
-	std::ofstream fileToWrite;
-	fileToWrite.open("CharCodes.txt");
-
+	// take the input text (the original from main), loop through it, find respective Huffman code in the map and add to the string
 	for (int i = 0; i < inputText.size(); i++) {
-		fileToWrite << charToBitMap.find(inputText[i])->second; // finds the letter (from inputText) in the map, then fetches its second (code)
-		huffmanCode += charToBitMap.find(inputText[i])->second; // could've just output the string from decodeHuffmanFromFile(), but doing this to stay organised
+		huffmanCode += charToBitMap.find(inputText[i])->second;
 	}
-	fileToWrite.close();
+	// write the Huffman codes to file
+	writeFile(huffmanCode, "CharCodes.txt");
 
 	std::cout << "- Huffman Encoded Characters Written To File\n\n";
-
 	std::cout << std::right << std::setw(6) << " " << "(Size:" << huffmanCode.size() << ")\n";
 
 	// loop just to break up the output into chunks of 30
@@ -135,43 +127,12 @@ void Huffman::encodeHuffmanToFile() {
 
 void Huffman::decodeHuffmanFromFile() {
 
-	// put file contents into a string
-	std::ifstream inputCharCodes("CharCodes.txt");
-
-	if (inputCharCodes.is_open()) {
-		while (inputCharCodes) {
-			std::getline(inputCharCodes, huffmanCode);
-		}
-	}
-	else {
-		"File Not Found";
-	}
-	inputCharCodes.close();
-
-	// decode Huffman code
-	std::string decodedHuffman = ""; // to store the decoded text
-	Node* nodePtr = root;
-	for (int i = 0; i != huffmanCode.size(); i++)
-	{
-		if (huffmanCode[i] == '0') { // if 0, go left
-			nodePtr = nodePtr->left;
-		}
-		else { // else, it can only be 1, which means go right
-			nodePtr = nodePtr->right;
-		}
-		if (nodePtr->left == nullptr && nodePtr->right == nullptr) // if we reach leaf node
-		{
-			decodedHuffman += nodePtr->letter; // append the letter in that leaf node to the string
-			nodePtr = root; // reset node pointer to root
-		}
-	}
+	huffmanCode = readFile("CharCodes.txt"); // put file contents into the string
+	std::string decodedHuffman = huffmanDecoder(huffmanCode); // decode Huffman code into a string
 	std::cout << "- Huffman Encoded Characters Decoded From File. Saved To A New File\n\n";
 
 	// write out the decoded message to file
-	std::ofstream fileToWrite;
-	fileToWrite.open("DecodedHuffman.txt");
-	fileToWrite << decodedHuffman;
-	fileToWrite.close();
+	writeFile(decodedHuffman, "DecodedHuffman.txt");
 
 	// output the code
 	std::cout << std::right << std::setw(6) << " " << decodedHuffman << "\n\n";
@@ -181,17 +142,11 @@ void Huffman::compressHuffmanToFile() {
 
 	std::cout << "- Huffman Code Compressed To ASCII. Saved To A New File\n\n"; // shhh.. not yet really. But it's going to happen below.
 
-//	std::cout << huffmanCode << "\n\n";				// test
-//	std::cout << huffmanCode.size() << "\n\n";		// test
-
 	// pad the huffman code to create chunks of equal size (8-bits) - Reason... CPU reads min of a byte (8-bits)
 	while (huffmanCode.size() % 8 != 0) {
 		huffmanCode.append("0");
 		padding++;
 	}
-
-//	std::cout << huffmanCode << "\n\n";				// test
-//	std::cout << huffmanCode.size(); "\n\n";		// test
 
 	std::string compressedCode;
 	std::stringstream sstream(huffmanCode);
@@ -220,10 +175,7 @@ void Huffman::compressHuffmanToFile() {
 	compressedCode.pop_back(); // this is to cut off the extra NUL (\0) at the end (Tip for whoever comes by this CA - Notepad++ points out NULs in text files)
 
 	// write out the compressed code to file
-	std::ofstream fileToWrite;
-	fileToWrite.open("CompressedHuffman.txt");
-	fileToWrite << compressedCode;
-	fileToWrite.close();
+	writeFile(compressedCode, "CompressedHuffman.txt");
 
 	std::cout << std::right << std::setw(6) << " " << "Output To File: " << compressedCode << "\n\n";
 }
@@ -232,21 +184,8 @@ void Huffman::decompressHuffmanFromFile() {
 
 	std::cout << "- Compressed ASCII Huffman Code Decompressed and Decoded From File\n\n";
 
-	unsigned char c = 'K';
-	// NOTE TO SELF... CREATE A METHOD TO READ IN FILES... CODE REUSE FFS!
-	// put file contents into a string
-	std::string input;
-	std::ifstream inputCompressedChars("CompressedHuffman.txt");
-
-	if (inputCompressedChars.is_open()) {
-		while (inputCompressedChars) {
-			std::getline(inputCompressedChars, input);
-		}
-	}
-	else {
-		"File Not Found";
-	}
-	inputCompressedChars.close();
+	// read file contents into a string
+	std::string input = readFile("CompressedHuffman.txt");
 
 	std::bitset<8> byte; // http://www.cplusplus.com/reference/bitset/bitset/
 	std::string decompressedHuffman;
@@ -261,11 +200,19 @@ void Huffman::decompressHuffmanFromFile() {
 		std::cout << std::right << std::setw(6) << " " << decompressedHuffman.substr(i, 30) << std::endl;
 	}
 
+	std::cout << "\n";
+	std::cout << std::right << std::setw(6) << " " << "DECODED\n";
+	std::cout << std::right << std::setw(6) << " " << huffmanDecoder(decompressedHuffman) << "\n\n"; // pass the decompressed Huffman code to the function which decodes and returns it as a string, then output it
+}
+
+// Huffman code decoder
+std::string Huffman::huffmanDecoder(std::string huffmanCodeIn) {
+
 	std::string decodedHuffman = ""; // to store the decoded text
 	Node* nodePtr = root;
-	for (int i = 0; i != decompressedHuffman.size()-padding; i++)
+	for (int i = 0; i != huffmanCodeIn.size() - padding; i++)
 	{
-		if (decompressedHuffman[i] == '0') { // if 0, go left
+		if (huffmanCodeIn[i] == '0') { // if 0, go left
 			nodePtr = nodePtr->left;
 		}
 		else { // else, it can only be 1, which means go right
@@ -277,8 +224,32 @@ void Huffman::decompressHuffmanFromFile() {
 			nodePtr = root; // reset node pointer to root
 		}
 	}
+	return decodedHuffman;
+}
 
-	std::cout << "\n";
-	std::cout << std::right << std::setw(6) << " " << "DECODED\n";
-	std::cout << std::right << std::setw(6) << " " << decodedHuffman << "\n\n";
+std::string Huffman::readFile(std::string fileNameIn) {
+
+	std::string input;
+	std::ifstream inputFile(fileNameIn);
+
+	if (inputFile.is_open()) {
+		while (inputFile) {
+			std::getline(inputFile, input);
+		}
+	}
+	else {
+		std::cout << "File Not Found";
+		system("pause");
+	}
+	inputFile.close();
+
+	return input;
+}
+
+void Huffman::writeFile(std::string textIn, std::string fileNameIn) {
+
+	std::ofstream outputFile;
+	outputFile.open(fileNameIn);
+	outputFile << textIn;
+	outputFile.close();
 }

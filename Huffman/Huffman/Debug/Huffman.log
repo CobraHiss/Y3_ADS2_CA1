@@ -1,5 +1,5 @@
 ﻿  Huffman.cpp
-c:\users\user\desktop\github_ca\huffman\huffman\huffman.cpp(119): warning C4018: '<': signed/unsigned mismatch
-c:\users\user\desktop\github_ca\huffman\huffman\huffman.cpp(254): warning C4018: '<': signed/unsigned mismatch
+c:\users\user\desktop\github_ca\huffman\huffman\huffman.cpp(112): warning C4018: '<': signed/unsigned mismatch
+c:\users\user\desktop\github_ca\huffman\huffman\huffman.cpp(193): warning C4018: '<': signed/unsigned mismatch
   Huffman.vcxproj -> C:\Users\User\Desktop\GitHub_CA\Huffman\Debug\Huffman.exe
   Huffman.vcxproj -> C:\Users\User\Desktop\GitHub_CA\Huffman\Debug\Huffman.pdb (Partial PDB)

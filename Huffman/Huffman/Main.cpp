@@ -16,6 +16,10 @@ int main() {
 			std::getline(inputTextFile, text);
 		}
 	}
+	else {
+		std::cout << "File Not Found";
+		system("pause");
+	}
 	inputTextFile.close();
 
 	std::cout << "- Input Text" << "\n\n" << std::right << std::setw(6) << " " << text << "\n\n"; // Preview
