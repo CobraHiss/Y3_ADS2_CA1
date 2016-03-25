@@ -34,12 +34,9 @@ You are required to carry out the tasks below:
 
 1. Write a program that takes as input a text file containing a poem of your choice. Open the
 text file and encrypt the contents using one of the two following ciphers.
- * a. Caesar cipher, a C++ implementation is give here
-http://rosettacode.org/wiki/Caesar_cipher#C.2B.2B
- * b. Rot-13 cipher, a C++ implementation is give here
-http://rosettacode.org/wiki/Rot-13#C.2B.2B
-Here is a link to a poem you can n use if you can’t think of any
-http://www.poppyfields.net/filks/00288.html
+ * a. Caesar cipher, a C++ implementation is give here http://rosettacode.org/wiki/Caesar_cipher#C.2B.2B
+ * b. Rot-13 cipher, a C++ implementation is give here http://rosettacode.org/wiki/Rot-13#C.2B.2B
+ * Here is a link to a poem you can n use if you can’t think of any http://www.poppyfields.net/filks/00288.html
 2. Ask me for an encrypted file “secret.txt” and write a C++ that decrypts it. To help you in
 this task here is a link to a frequency analysis of the English alphabet
 http://www.richkni.co.uk/php/crypta/freq.php
