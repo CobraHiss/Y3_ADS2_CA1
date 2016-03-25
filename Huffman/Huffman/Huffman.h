@@ -27,6 +27,7 @@ private:
 	std::string huffmanDecoder(std::string huffmanCodeIn); // moved decoder to its own function for reuse
 	std::string readFile(std::string fileNameIn);
 	void writeFile(std::string textIn, std::string fileNameIn);
+	void summary();
 	std::priority_queue<Node, std::vector<Node*>, NodeCompare> pQ;	// http://stackoverflow.com/questions/15646780/priority-queue-of-nodes
 	Node* root = nullptr; // the tree "hangs" off of this root		// http://stackoverflow.com/questions/16111337/declaring-a-priority-queue-in-c-with-a-custom-comparator
 public:

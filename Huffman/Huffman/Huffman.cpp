@@ -26,6 +26,7 @@ Huffman::Huffman(std::string textIn)
 	decodeHuffmanFromFile();
 	compressHuffmanToFile();
 	decompressHuffmanFromFile();
+	summary();
 }
 
 void Huffman::createCharFreqMap() {
@@ -109,7 +110,7 @@ void Huffman::encodeHuffmanToFile() {
 	std::cout << std::endl;
 
 	// take the input text (the original from main), loop through it, find respective Huffman code in the map and add to the string
-	for (int i = 0; i < inputText.size(); i++) {
+	for (unsigned int i = 0; i < inputText.size(); i++) {
 		huffmanCode += charToBitMap.find(inputText[i])->second;
 	}
 	// write the Huffman codes to file
@@ -190,7 +191,7 @@ void Huffman::decompressHuffmanFromFile() {
 	std::bitset<8> byte; // http://www.cplusplus.com/reference/bitset/bitset/
 	std::string decompressedHuffman;
 
-	for (int i = 0; i < input.size(); i++) {
+	for (unsigned int i = 0; i < input.size(); i++) {
 		byte = input[i];
 		// std::cout << byte; // wow, this worked like magic, MAGIC!
 		decompressedHuffman += byte.to_string(); // convert byte bitset to string and append to the left string
@@ -252,4 +253,12 @@ void Huffman::writeFile(std::string textIn, std::string fileNameIn) {
 	outputFile.open(fileNameIn);
 	outputFile << textIn;
 	outputFile.close();
+}
+
+void Huffman::summary() {
+
+	std::cout << "- Summary\n\n";
+	std::cout << std::right << std::setw(6) << " " << "Size Of Original Text: " << (inputText.size() * 8) << " Bits\n";
+	std::cout << std::right << std::setw(6) << " " << "Size Of Text After Huffman Coding: " << (huffmanCode.size() - padding) << " Bits\n";
+	std::cout << std::right << std::setw(6) << " " << "Total Saving Of: " << ((inputText.size() * 8) - (huffmanCode.size() - padding)) << " Bits\n\n";
 }
