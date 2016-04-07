@@ -1,0 +1,5 @@
+﻿  Main.cpp
+c:\users\user\desktop\github_ca\vigenere\vigenere\main.cpp(119): warning C4267: 'initializing': conversion from 'size_t' to 'char', possible loss of data
+c:\users\user\desktop\github_ca\vigenere\vigenere\main.cpp(133): warning C4267: 'argument': conversion from 'size_t' to 'char', possible loss of data
+  Vigenere.vcxproj -> C:\Users\User\Desktop\GitHub_CA\Vigenere\Debug\Vigenere.exe
+  Vigenere.vcxproj -> C:\Users\User\Desktop\GitHub_CA\Vigenere\Debug\Vigenere.pdb (Partial PDB)
